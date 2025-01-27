@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { TagContainer } from '../Tag/styles'
 
 export const BannerImg = styled.div`
   width: 100%;
@@ -7,12 +8,25 @@ export const BannerImg = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   font-weight: bold;
-  padding-top: 340px;
+
+  .container {
+    position: relative;
+    padding-top: 340px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  ${TagContainer} {
+    position: absolute;
+    top: 32px;
+  }
 `
 
 export const BannerTitle = styled.h2`
   font-size: 36px;
   max-width: 450px;
+  margin-bottom: 32px;
 `
 
 export const BannerPrices = styled.p`
