@@ -7,7 +7,9 @@ import cart from '../../assets/images/cart.svg'
 const Header = () => (
   <HeaderBar>
     <div>
-      <img src={logo} alt="EPLAY logo" />
+      <Link to={'/'}>
+        <img src={logo} alt="EPLAY logo" />
+      </Link>
       <nav>
         <Links>
           <LinkItem>
