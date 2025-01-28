@@ -31,5 +31,5 @@ export const CardDescription = styled.p`
 export const Infos = styled.div`
   position: absolute;
   top: 16px;
-  right: 16px;
+  right: 8px;
 `
