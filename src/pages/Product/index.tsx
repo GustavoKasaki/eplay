@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom'
 import Hero from '../../components/Hero'
 import Section from '../../components/Section'
 
+import resident from '../../assets/images/resident.png'
+
 import Gallery from '../../components/Gallery'
 
 const Product = () => {
@@ -35,9 +37,7 @@ const Product = () => {
           Audio and subtitle options can be adjusted in the game settings.
         </p>
       </Section>
-      <Section title="Gallery" background="black">
-        <Gallery />
-      </Section>
+      <Gallery name="test" defaultCover={resident} />
     </>
   )
 }
