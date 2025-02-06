@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import Section from '../Section'
+import { GalleryItem } from '../../pages/Home'
 import { Action, GalleryItems, Item, Modal, ModalContent } from './styles'
 
 import zelda from '../../assets/images/zelda.png'
@@ -13,11 +14,6 @@ import close from '../../assets/images/close.png'
 type Props = {
   defaultCover: string
   name: string
-}
-
-interface GalleryItem {
-  type: 'image' | 'video'
-  url: string
 }
 
 interface ModalState extends GalleryItem {
