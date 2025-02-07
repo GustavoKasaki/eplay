@@ -29,7 +29,7 @@ const Banner = () => {
             to {priceFormat(game.prices.current)}
           </BannerPrices>
         </div>
-        <Button type="link" title="Check it out" to="/product">
+        <Button type="link" title="Check it out" to={`/product/${game.id}`}>
           Check it out
         </Button>
       </div>

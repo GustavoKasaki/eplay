@@ -1,43 +1,46 @@
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
+import { Game } from '../Home'
 import Hero from '../../components/Hero'
 import Section from '../../components/Section'
-
-import resident from '../../assets/images/resident.png'
-
 import Gallery from '../../components/Gallery'
 
 const Product = () => {
   const { id } = useParams()
 
+  const [game, setGame] = useState<Game>()
+
+  useEffect(() => {
+    fetch(`https://fake-api-tau.vercel.app/api/eplay/jogos/${id}`)
+      .then((res) => res.json())
+      .then((res) => setGame(res))
+  }, [id])
+
+  if (!game) {
+    return <h3>Loading...</h3>
+  }
+
   return (
     <>
-      <Hero />
+      <Hero game={game} />
       <Section title="About the game" background="black">
-        <p>
-          Hogwarts Legacy is an action role-playing game played from a
-          third-person perspective. It is set at Hogwarts School of Witchcraft
-          and Wizardry and its surrounding areas, influenced by the Wizarding
-          World franchise. When creating a character, players can customize
-          several features, such as their character&apos;s look, complexion,
-          vocal characteristics, and whether they wish to be housed in a Witch
-          or Wizard dormitory. They must also choose one of the four Hogwarts
-          Houses. Taking part in and completing classes is essential to the
-          storyline, as it unlocks certain gameplay mechanics, including the
-          option to fly on brooms.
-        </p>
+        <p>{game.description}</p>
       </Section>
       <Section title="More info" background="gray">
         <p>
-          <b>Platform:</b> PlayStation 5 <br />
-          <b>Developer:</b> Avalanche Software <br />
-          <b>Publisher:</b> Portkey Games, a subsidiary of Warner Bros.
-          Interactive Entertainment <br />
-          <b>Languages:</b> The game supports multiple languages, including
-          English, Spanish, French, German, Italian, Portuguese, among others.
-          Audio and subtitle options can be adjusted in the game settings.
+          <b>Platform:</b>
+          {game.details.system} <br />
+          <b>Developer:</b> {game.details.developer} <br />
+          <b>Publisher:</b> {game.details.publisher} <br />
+          <b>Languages:</b> {game.details.languages.join(', ')}
         </p>
       </Section>
-      <Gallery name="test" defaultCover={resident} />
+      <Gallery
+        name={game.name}
+        defaultCover={game.media.cover}
+        items={game.media.gallery}
+      />
     </>
   )
 }
