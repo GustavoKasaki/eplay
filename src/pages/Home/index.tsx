@@ -42,6 +42,12 @@ const Home = () => {
       .then((res) => setSale(res))
   }, [])
 
+  useEffect(() => {
+    fetch('https://fake-api-tau.vercel.app/api/eplay/em-breve')
+      .then((res) => res.json())
+      .then((res) => setSoon(res))
+  }, [])
+
   return (
     <>
       <Banner />
