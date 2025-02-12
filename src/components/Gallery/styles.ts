@@ -3,6 +3,8 @@ import { Colors } from '../../styles'
 
 export const GalleryItems = styled.ul`
   display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 `
 
 export const Action = styled.div`
@@ -20,18 +22,17 @@ export const Action = styled.div`
 `
 
 export const Item = styled.li`
-  margin-right: 16px;
   position: relative;
 
   > img {
-    border: 2px solid ${Colors.white}
+    border: 2px solid ${Colors.white};
     border-radius: 8px;
     width: 150px;
     height: 150px;
     object-fit: cover;
   }
 
-    &:hover {
+  &:hover {
     ${Action} {
       opacity: 1;
       cursor: pointer;
