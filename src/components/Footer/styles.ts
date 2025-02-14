@@ -6,6 +6,7 @@ export const FooterContainer = styled.footer`
   background-color: ${Colors.gray};
   padding: 32px 0;
   font-size: 14px;
+  margin-top: 40px;
 `
 
 export const FooterTitle = styled.h4`
