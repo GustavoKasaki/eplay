@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import Hero from '../../components/Hero'
 import Section from '../../components/Section'
 import Gallery from '../../components/Gallery'
+
 import { useGetGameQuery } from '../../services/api'
 
 const Product = () => {
@@ -21,8 +22,7 @@ const Product = () => {
       </Section>
       <Section title="More info" background="gray">
         <p>
-          <b>Platform:</b>
-          {game.details.system} <br />
+          <b>Platform:</b> {game.details.system} <br />
           <b>Developer:</b> {game.details.developer} <br />
           <b>Publisher:</b> {game.details.publisher} <br />
           <b>Languages:</b> {game.details.languages.join(', ')}

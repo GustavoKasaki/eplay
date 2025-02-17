@@ -1,50 +1,70 @@
-import {
-  FooterContainer,
-  FooterLink,
-  FooterSection,
-  FooterList,
-  FooterTitle
-} from './styles'
+import * as S from './styles'
 
 const currentYear = new Date().getFullYear()
 
 const Footer = () => (
-  <FooterContainer>
+  <S.FooterContainer>
     <div className="container">
-      <FooterSection>
-        <FooterTitle>Categories</FooterTitle>
-        <FooterList>
+      <S.FooterSection>
+        <S.FooterTitle>Categories</S.FooterTitle>
+        <S.FooterList>
           <li>
-            <FooterLink to="/categories#rpg">RPG</FooterLink>
+            <S.FooterLink title="Click to view RPG games" to="/categories#rpg">
+              RPG
+            </S.FooterLink>
           </li>
           <li>
-            <FooterLink to="/categories#action">Action</FooterLink>
+            <S.FooterLink
+              title="Click to view Action games"
+              to="/categories#action"
+            >
+              Action
+            </S.FooterLink>
           </li>
           <li>
-            <FooterLink to="/categories#sports">Sports</FooterLink>
+            <S.FooterLink
+              title="Click to view Sports games"
+              to="/categories#sports"
+            >
+              Sports
+            </S.FooterLink>
           </li>
           <li>
-            <FooterLink to="/categories#sim">Simulation</FooterLink>
+            <S.FooterLink
+              title="Click to view Simulation games"
+              to="/categories#sim"
+            >
+              Simulation
+            </S.FooterLink>
           </li>
           <li>
-            <FooterLink to="/categories#fight">Fight</FooterLink>
+            <S.FooterLink
+              title="Click to view Fight games"
+              to="/categories#fight"
+            >
+              Fight
+            </S.FooterLink>
           </li>
-        </FooterList>
-      </FooterSection>
-      <FooterSection>
-        <FooterTitle>Quick access</FooterTitle>
-        <FooterList>
+        </S.FooterList>
+      </S.FooterSection>
+      <S.FooterSection>
+        <S.FooterTitle>Quick access</S.FooterTitle>
+        <S.FooterList>
           <li>
-            <FooterLink to="/#on-sale">Sale</FooterLink>
+            <S.FooterLink title="Click to view games on sale" to="/#on-sale">
+              Sale
+            </S.FooterLink>
           </li>
           <li>
-            <FooterLink to="/#soon">Soon</FooterLink>
+            <S.FooterLink title="Click to view games TBD" to="/#soon">
+              Soon
+            </S.FooterLink>
           </li>
-        </FooterList>
-      </FooterSection>
-      <p>{currentYear} - &copy;EPLAY All rights reserved</p>
+        </S.FooterList>
+      </S.FooterSection>
+      <p>{currentYear} - &copy;EPLAY - All rights reserved</p>
     </div>
-  </FooterContainer>
+  </S.FooterContainer>
 )
 
 export default Footer

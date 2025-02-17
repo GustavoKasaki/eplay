@@ -5,17 +5,11 @@ import { RootReducer } from '../../store'
 
 import { open } from '../../store/reducers/cart'
 
-import {
-  CartButton,
-  Hamburguer,
-  HeaderBar,
-  HeaderRow,
-  LinkItem,
-  Links,
-  NavMobile
-} from './styles'
 import logo from '../../assets/images/logo.svg'
 import cart from '../../assets/images/cart.svg'
+import { HashLink } from 'react-router-hash-link'
+
+import * as S from './styles'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -27,51 +21,75 @@ const Header = () => {
   }
 
   return (
-    <HeaderBar>
-      <HeaderRow>
+    <S.HeaderBar>
+      <S.HeaderRow>
         <div>
-          <Hamburguer onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <S.Hamburguer onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <span />
             <span />
             <span />
-          </Hamburguer>
+          </S.Hamburguer>
           <Link to={'/'}>
             <img src={logo} alt="EPLAY logo" />
           </Link>
           <nav>
-            <Links>
-              <LinkItem>
-                <Link to={'/categories'}>Categories</Link>
-              </LinkItem>
-              <LinkItem>
-                <a href="#">New</a>
-              </LinkItem>
-              <LinkItem>
-                <a href="#">On sale</a>
-              </LinkItem>
-            </Links>
+            <S.Links>
+              <S.LinkItem>
+                <Link title="Click to view categories page" to={'/categories'}>
+                  Categories
+                </Link>
+              </S.LinkItem>
+              <S.LinkItem>
+                <HashLink title="Click to view games TBD" to="/#soon">
+                  Soon
+                </HashLink>
+              </S.LinkItem>
+              <S.LinkItem>
+                <HashLink title="Click to view games on sale" to="/#on-sale">
+                  On sale
+                </HashLink>
+              </S.LinkItem>
+            </S.Links>
           </nav>
         </div>
-        <CartButton onClick={openCart}>
+        <S.CartButton onClick={openCart}>
           {items.length}
           <span>product(s)</span>
           <img src={cart} alt="Cart" />
-        </CartButton>
-      </HeaderRow>
-      <NavMobile className={isMenuOpen ? 'is-open' : ''}>
-        <Links>
-          <LinkItem>
-            <Link to={'/categories'}>Categories</Link>
-          </LinkItem>
-          <LinkItem>
-            <a href="#">New</a>
-          </LinkItem>
-          <LinkItem>
-            <a href="#">On sale</a>
-          </LinkItem>
-        </Links>
-      </NavMobile>
-    </HeaderBar>
+        </S.CartButton>
+      </S.HeaderRow>
+      <S.NavMobile className={isMenuOpen ? 'is-open' : ''}>
+        <S.Links>
+          <S.LinkItem>
+            <Link
+              title="Click to view categories page"
+              to={'/categories'}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Categories
+            </Link>
+          </S.LinkItem>
+          <S.LinkItem>
+            <HashLink
+              title="Click to view games TBD"
+              to="/#soon"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Soon
+            </HashLink>
+          </S.LinkItem>
+          <S.LinkItem>
+            <HashLink
+              title="Click to view games on sale"
+              to="/#on-sale"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              On sale
+            </HashLink>
+          </S.LinkItem>
+        </S.Links>
+      </S.NavMobile>
+    </S.HeaderBar>
   )
 }
 
