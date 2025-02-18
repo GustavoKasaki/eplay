@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
@@ -11,10 +12,23 @@ import card from '../../assets/images/cartao.png'
 import { usePurchaseMutation } from '../../services/api'
 
 import * as S from './styles'
+import { RootReducer } from '../../store'
+import { Navigate } from 'react-router-dom'
+import { getTotalPrice, parseToBrl } from '../../utils'
+
+type Installment = {
+  qty: number
+  amount: number
+  formattedAmount: string
+}
 
 const Checkout = () => {
   const [payWithCard, setPayWithCard] = useState(false)
   const [purchase, { isSuccess, data }] = usePurchaseMutation()
+  const { items } = useSelector((state: RootReducer) => state.cart)
+  const [installments, setInstallments] = useState<Installment[]>([])
+
+  const totalPrice = getTotalPrice(items)
 
   const form = useFormik({
     initialValues: {
@@ -118,6 +132,28 @@ const Checkout = () => {
     const hasError = isTouched && isInvalid
 
     return hasError
+  }
+
+  useEffect(() => {
+    const calculateInstallments = () => {
+      const installmentsArray: Installment[] = []
+      for (let i = 1; i <= 6; i++) {
+        installmentsArray.push({
+          qty: i,
+          amount: totalPrice / i,
+          formattedAmount: parseToBrl(totalPrice / i)
+        })
+      }
+      return installmentsArray
+    }
+
+    if (totalPrice > 0) {
+      setInstallments(calculateInstallments())
+    }
+  }, [totalPrice])
+
+  if (items.length === 0) {
+    return <Navigate to="/" />
   }
 
   return (
@@ -371,9 +407,11 @@ const Checkout = () => {
                           name="installments"
                           value={form.values.installments}
                         >
-                          <option value="">1x R$ 200,00</option>
-                          <option value="">2x R$ 100,00</option>
-                          <option value="">4x R$ 50,00</option>
+                          {installments.map((installment) => (
+                            <option key={installment.qty}>
+                              {installment.qty}x {installment.formattedAmount}
+                            </option>
+                          ))}
                         </select>
                       </S.InputGroup>
                     </S.Row>
@@ -393,7 +431,7 @@ const Checkout = () => {
           </Card>
           <Button
             onClick={form.handleSubmit}
-            type="button"
+            type="submit"
             title={'Click here to finish the purchase'}
           >
             Finish purchase
