@@ -40,6 +40,13 @@ export const Sidebar = styled.aside`
     max-width: 100%;
     width: 100%;
   }
+
+  .empty {
+    font-size: 14px;
+    line-height: 22px;
+    color: ${Colors.white};
+    text-align: center;
+  }
 `
 
 export const Quantity = styled.p`

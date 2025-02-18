@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import InputMask from 'react-input-mask'
 
 import Button from '../../components/Button'
 import Card from '../../components/Card'
@@ -10,11 +12,11 @@ import boleto from '../../assets/images/boleto.png'
 import card from '../../assets/images/cartao.png'
 
 import { usePurchaseMutation } from '../../services/api'
+import { RootReducer } from '../../store'
+import { clear } from '../../store/reducers/cart'
+import { getTotalPrice, parseToBrl } from '../../utils'
 
 import * as S from './styles'
-import { RootReducer } from '../../store'
-import { Navigate } from 'react-router-dom'
-import { getTotalPrice, parseToBrl } from '../../utils'
 
 type Installment = {
   qty: number
@@ -24,9 +26,10 @@ type Installment = {
 
 const Checkout = () => {
   const [payWithCard, setPayWithCard] = useState(false)
-  const [purchase, { isSuccess, data }] = usePurchaseMutation()
+  const [purchase, { isSuccess, data, isLoading }] = usePurchaseMutation()
   const { items } = useSelector((state: RootReducer) => state.cart)
   const [installments, setInstallments] = useState<Installment[]>([])
+  const dispatch = useDispatch()
 
   const totalPrice = getTotalPrice(items)
 
@@ -44,7 +47,7 @@ const Checkout = () => {
       expireMonth: '',
       expireYear: '',
       cardCode: '',
-      installments: ''
+      installments: 1
     },
     validationSchema: Yup.object({
       fullName: Yup.string()
@@ -85,7 +88,7 @@ const Checkout = () => {
       cardCode: Yup.string().when((values, schema) =>
         payWithCard ? schema.required('This field must be filled!') : schema
       ),
-      installments: Yup.string().when((values, schema) =>
+      installments: Yup.number().when((values, schema) =>
         payWithCard ? schema.required('This field must be filled!') : schema
       )
     }),
@@ -100,7 +103,7 @@ const Checkout = () => {
           email: values.deliveryEmail
         },
         payment: {
-          installments: 1,
+          installments: values.installments,
           card: {
             active: payWithCard,
             code: Number(values.cardCode),
@@ -111,17 +114,15 @@ const Checkout = () => {
               name: values.cardOwner
             },
             expires: {
-              month: 1,
-              year: 2025
+              month: Number(values.expireMonth),
+              year: Number(values.expireYear)
             }
           }
         },
-        products: [
-          {
-            id: 1,
-            price: 10
-          }
-        ]
+        products: items.map((item) => ({
+          id: item.id,
+          price: item.prices.current as number
+        }))
       })
     }
   })
@@ -152,13 +153,19 @@ const Checkout = () => {
     }
   }, [totalPrice])
 
-  if (items.length === 0) {
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(clear())
+    }
+  }, [dispatch, isSuccess])
+
+  if (items.length === 0 && !isSuccess) {
     return <Navigate to="/" />
   }
 
   return (
     <div className="container">
-      {isSuccess ? (
+      {isSuccess && data ? (
         <Card title="Thank you">
           <>
             <p>
@@ -225,7 +232,8 @@ const Checkout = () => {
                 </S.InputGroup>
                 <S.InputGroup>
                   <label htmlFor="cpf">CPF</label>
-                  <input
+                  <InputMask
+                    mask="999.999.999-99"
                     id="cpf"
                     type="text"
                     name="cpf"
@@ -312,7 +320,8 @@ const Checkout = () => {
                         <label htmlFor="cpfCardOwner">
                           Card Holder&apos;s CPF
                         </label>
-                        <input
+                        <InputMask
+                          mask="999.999.999-99"
                           type="text"
                           id="cpfCardOwner"
                           name="cpfCardOwner"
@@ -344,7 +353,8 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup>
                         <label htmlFor="cardNumber">Card number</label>
-                        <input
+                        <InputMask
+                          mask="9999 9999 9999 9999"
                           type="text"
                           id="cardNumber"
                           name="cardNumber"
@@ -358,7 +368,8 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expireMonth">Expiration month</label>
-                        <input
+                        <InputMask
+                          mask="99"
                           type="text"
                           id="expireMonth"
                           name="expireMonth"
@@ -371,12 +382,13 @@ const Checkout = () => {
                         />
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
-                        <label htmlFor="expireMonth">Expiration year</label>
-                        <input
+                        <label htmlFor="expireYear">Expiration year</label>
+                        <InputMask
+                          mask="99"
                           type="text"
-                          id="expireMonth"
-                          name="expireMonth"
-                          value={form.values.expireMonth}
+                          id="expireYear"
+                          name="expireYear"
+                          value={form.values.expireYear}
                           onChange={form.handleChange}
                           onBlur={form.handleBlur}
                           className={
@@ -386,7 +398,8 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="48px">
                         <label htmlFor="cardCode">CVV</label>
-                        <input
+                        <InputMask
+                          mask="999"
                           type="text"
                           id="cardCode"
                           name="cardCode"
@@ -406,10 +419,19 @@ const Checkout = () => {
                           id="installments"
                           name="installments"
                           value={form.values.installments}
+                          onChange={form.handleChange}
+                          onBlur={form.handleBlur}
+                          className={
+                            checkInputHasError('installments') ? 'error' : ''
+                          }
                         >
                           {installments.map((installment) => (
-                            <option key={installment.qty}>
-                              {installment.qty}x {installment.formattedAmount}
+                            <option
+                              value={installment.qty}
+                              key={installment.qty}
+                            >
+                              {installment.qty}x of{' '}
+                              {installment.formattedAmount}
                             </option>
                           ))}
                         </select>
@@ -433,8 +455,9 @@ const Checkout = () => {
             onClick={form.handleSubmit}
             type="submit"
             title={'Click here to finish the purchase'}
+            disabled={isLoading}
           >
-            Finish purchase
+            {isLoading ? 'Finishing purchase...' : 'Finish purchase'}
           </Button>
         </form>
       )}
